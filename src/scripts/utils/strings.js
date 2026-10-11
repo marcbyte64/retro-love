@@ -18,13 +18,13 @@ export function tokenize(string) {
   let stringmode = false;
   let nummode = false;
   let varmode = false;
+  let isInMode = false;
 
   for (let i = 0; i <= string.length; i++) {
     const char = string[i];
 
-    // turn stringmode on
-    if (char === '"' && !stringmode) {
-      stringmode = true;
+    // remove spaces if not in stringmode
+    if (!stringmode && char === ' ') {
       continue;
     }
 
@@ -32,7 +32,38 @@ export function tokenize(string) {
     if (char === '"' && stringmode) {
       tokens.push({ value: buffer, type: 'string' });
       stringmode = false;
+      isInMode = false;
       buffer = '';
+      continue;
+    }
+    // turn nummode off
+    if (!/^[0-9.]$/.test(char) && nummode) {
+      tokens.push({ value: Number(buffer), type: 'number' });
+      buffer = '';
+      nummode = false;
+      isInMode = false;
+    }
+    // turn varmode off
+    if ((!/^[A-Za-z]$/.test(char) || types.includes(char)) && varmode) {
+      if (types.includes(char)) {
+        buffer += char;
+        tokens.push({ value: buffer, type: 'variable' });
+        buffer = '';
+        varmode = false;
+        isInMode = false;
+        continue;
+      }
+
+      tokens.push({ value: buffer, type: 'variable' });
+      buffer = '';
+      varmode = false;
+      isInMode = false;
+    }
+
+    // turn stringmode on
+    if (char === '"' && !stringmode && !isInMode) {
+      stringmode = true;
+      isInMode = true;
       continue;
     }
 
@@ -42,23 +73,12 @@ export function tokenize(string) {
       continue;
     }
 
-    // remove spaces if not in stringmode
-    if (!stringmode && char === ' ') {
-      continue;
-    }
-
     // turn nummode on
-    if (/^[0-9.]$/.test(char) && !nummode) {
+    if (/^[0-9.]$/.test(char) && !nummode && !isInMode) {
       nummode = true;
+      isInMode = true;
       buffer += char;
       continue;
-    }
-
-    // turn nummode off
-    if (!/^[0-9.]$/.test(char) && nummode) {
-      tokens.push({ value: Number(buffer), type: 'number' });
-      buffer = '';
-      nummode = false;
     }
 
     // add number to number-buffer
@@ -75,25 +95,11 @@ export function tokenize(string) {
     }
 
     // turn varmode on
-    if (/^[A-Za-z]$/.test(char) && !varmode) {
+    if (/^[A-Za-z]$/.test(char) && !varmode && !isInMode) {
       varmode = true;
+      isInMode = true;
       buffer += char;
       continue;
-    }
-
-    // turn varmode off
-    if ((!/^[A-Za-z]$/.test(char) || types.includes(char)) && varmode) {
-      if (types.includes(char)) {
-        buffer += char;
-        tokens.push({ value: buffer, type: 'variable' });
-        buffer = '';
-        varmode = false;
-        continue;
-      }
-
-      tokens.push({ value: buffer, type: 'variable' });
-      buffer = '';
-      varmode = false;
     }
 
     // add char to variable-buffer
