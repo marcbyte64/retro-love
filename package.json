@@ -4,10 +4,10 @@
 	"description": "",
 	"main": "script.min.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
+		"build": "tsc --noEmit && vite build",
+		"preview": "vite preview",
+		"typecheck": "tsc --noEmit"
 	},
 	"repository": {
 		"type": "git",
@@ -22,6 +22,7 @@
 	"homepage": "https://github.com/darQrrR/retro-love#readme",
 	"devDependencies": {
 		"sass": "^1.97.3",
+		"typescript": "^7.0.2",
 		"vite": "^7.3.1"
 	}
 }
