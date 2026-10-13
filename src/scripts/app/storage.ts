@@ -1,7 +1,9 @@
-export let commandStorage = [];
-export let variableStorage = [];
+import type { Command } from "../types/command";
 
-export const storeCommand = (command) => {
+export let commandStorage: Command[] = [];
+export let variableStorage: Record<string, string | number> = {};
+
+export const storeCommand = (command: Command) => {
   // if linenumer already exists -> remove
   const exists = commandStorage.findIndex((obj) => obj.lineNumber === command.lineNumber);
   if (exists !== -1) commandStorage.splice(exists, 1);
@@ -11,7 +13,7 @@ export const storeCommand = (command) => {
   commandStorage.sort((a, b) => a.lineNumber - b.lineNumber);
 };
 
-export const storeVariable = (name, value) => {
+export const storeVariable = (name: string, value: string | number) => {
   variableStorage[name] = value;
 };
 
@@ -20,10 +22,10 @@ export const clearCommandStorage = () => {
 };
 
 export const clearVariableStorage = () => {
-  variableStorage = [];
+  variableStorage = {};
 };
 
 export const clearAllStorage = () => {
   commandStorage = [];
-  variableStorage = [];
+  variableStorage = {};
 };

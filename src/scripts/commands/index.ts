@@ -1,13 +1,13 @@
-import { RUN } from './run.js';
-import { GOTO } from './goto.js';
-import { IF } from './if.js';
-import { INPUT } from './input.js';
-import { GET } from './get.js';
-import { PRINT } from './print.js';
-import { LIST } from './list.js';
-import { CLR } from './clr.js';
-import { REM } from './rem.js';
-import { EXIT } from './exit.js';
+import { RUN } from './run';
+import { GOTO } from './goto';
+import { IF } from './if';
+import { INPUT } from './input';
+import { GET } from './get';
+import { PRINT } from './print';
+import { LIST } from './list';
+import { CLR } from './clr';
+import { REM } from './rem';
+import { EXIT } from './exit';
 
 export const commands = {
   run: { args: 0, fn: RUN }, // run stored prompts

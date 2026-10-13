@@ -1,39 +1,35 @@
-import { dom } from '../ui/dom.js';
-import { commands } from '../commands/index.js';
-import * as storage from './storage.js';
+import { dom } from '../ui/dom';
+import { commands } from '../commands/index';
+import * as storage from './storage';
 
 function createDispatcher() {
-  function dispatchCommand(prompt) {
+  function dispatchCommand(prompt: string) {
     const lineNumberMatch = prompt.match(/^(\d+)\s/);
-    const hasLineNumber = !!lineNumberMatch;
-    const lineNumber = hasLineNumber ? Number(lineNumberMatch[1]) : null;
-
-    const commandText = hasLineNumber ? prompt.slice(lineNumberMatch[0].length) : prompt;
+    const lineNumber = lineNumberMatch ? Number(lineNumberMatch[1]) : null;
+    const commandText = lineNumberMatch ? prompt.slice(lineNumberMatch[0].length) : prompt;
     const validatedCommand = validateCommand(commandText);
-    const isValidCommand = validatedCommand.valid;
 
-    if (!isValidCommand) {
+    // todo: clean up
+    if (!validatedCommand || !validatedCommand.valid) {
       dom.outputLine(`?Syntax Error`);
       dom.resetInput(true);
       return;
     }
 
-    // store command if line number was given
-    if (hasLineNumber) {
+    if (lineNumberMatch !== null) {
+      const lineNumber = Number(lineNumberMatch[1]);
       const { fn, args } = validatedCommand;
+
       storage.storeCommand({ lineNumber, fn, args });
       dom.resetInput(false);
-    }
-
-    // execute command if no linenumber was given
-    if (!hasLineNumber) {
+    } else {
       validatedCommand.fn(validatedCommand.args).then(() => {
         dom.resetInput(true);
       });
     }
   }
 
-  function validateCommand(commandText) {
+  function validateCommand(commandText: string) {
     const space = commandText.indexOf(' ');
     let command, args;
 

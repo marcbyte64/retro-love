@@ -1,13 +1,13 @@
-import { commandTypes } from '../app/constants.js';
-import { storeVariable } from '../app/storage.js';
-import * as strings from '../../scripts/utils/strings.js';
-import { dom } from '../ui/dom.js';
+import { commandType } from '../app/constants';
+import { storeVariable } from '../app/storage';
+import * as strings from '../../scripts/utils/strings';
+import { dom } from '../ui/dom';
 
-export async function INPUT(args) {
+export async function INPUT(args: string) {
   const tokens = strings.tokenize(args);
 
   // check if input starts with prompt request
-  if (tokens[0].type === 'string' && tokens[1].value === ';' && tokens[2].type === 'variable') {
+  if (tokens.length >= 3 && tokens[0].type === 'string' && tokens[1].value === ';' && tokens[2].type === 'variable') {
     dom.outputLine(tokens[0].value);
   }
 
@@ -23,22 +23,22 @@ export async function INPUT(args) {
   );
 
   if (lastElement.type !== 'variable') {
-    return { type: commandTypes.ERROR, value: null };
+    return { type: commandType.ERROR, value: null };
   }
 
   // invalild input
   if (!separatorsValid || !variablesValid || lastElement.type !== 'variable') {
-    return { type: commandTypes.ERROR, value: null };
+    return { type: commandType.ERROR, value: null };
   }
 
   const requestedVariables = vars.filter((_, i) => i % 2 === 0);
-  return { type: commandTypes.INPUT, value: requestedVariables };
+  return { type: commandType.INPUT, value: requestedVariables };
 }
 
 // TODO: ability to cancel input with CTRL+C
-export async function waitForUserInput(variableName) {
+export async function waitForUserInput(variableName: string) {
   return new Promise((resolve, reject) => {
-    const handler = (e) => {
+    const handler = (e: KeyboardEvent): void => {
       if (e.key === 'Enter') {
         const inputValue = dom.input.value.trim();
         const isCompatible = strings.isTypeCompatible(variableName, inputValue);

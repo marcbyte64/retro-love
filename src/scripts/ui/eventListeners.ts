@@ -1,17 +1,18 @@
-import { programState } from '../app/state.js';
-import { inputModes } from '../app/constants.js';
+import { programState } from '../app/state';
+import { inputMode } from '../app/constants';
 
-import { dispatcher } from '../app/dispatcher.js';
+import { dispatcher } from '../app/dispatcher';
+import { dom } from '../ui/dom';
 
 function createEventListeners() {
-  function addEventListeners(dom) {
+  function addEventListeners(): void {
     const { input } = dom;
 
     // move cursor on input
     //TODO: blinking cursor movement with arrow-keys
     input.addEventListener('input', () => {
       const inputSize = input.value.length ? input.value.length : 1;
-      input.setAttribute('size', inputSize);
+      input.size = inputSize;
       input.style.width = input.value.length === 0 ? '0px' : 'auto';
     });
 
@@ -22,7 +23,7 @@ function createEventListeners() {
 
     // handle input
     // TODO: remove syntax error on empty enter
-    const keysDown = [];
+    const keysDown:string[] = [];
     input.addEventListener('keydown', (e) => {
       const key = e.key;
 
@@ -41,7 +42,7 @@ function createEventListeners() {
         return;
       }
 
-      if (key === 'Enter' && programState.activeInputMode === inputModes.PROMPT) {
+      if (key === 'Enter' && programState.activeInputMode === inputMode.PROMPT) {
         const inputValue = input.value.toLowerCase().trim();
         dom.clearInput();
         dom.outputLine(inputValue);

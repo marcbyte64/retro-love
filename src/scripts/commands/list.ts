@@ -1,6 +1,6 @@
-import { commandTypes } from '../app/constants.js';
-import * as storage from '../app/storage.js';
-import { dom } from '../ui/dom.js';
+import { commandType } from '../app/constants';
+import * as storage from '../app/storage';
+import { dom } from '../ui/dom';
 
 export async function LIST() {
   // TODO: list prompts of range, e.g. LIST 30,80
@@ -8,5 +8,5 @@ export async function LIST() {
     dom.outputLine(`${prompt.lineNumber} ${prompt.fn.name} ${prompt.args}`);
   });
 
-  return { type: commandTypes.DEFAULT, value: null };
+  return { type: commandType.DEFAULT, value: null };
 }

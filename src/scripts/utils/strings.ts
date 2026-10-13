@@ -8,8 +8,10 @@
  * @return {Array} An array of objects representing the tokenized string, with each object containing a value and a type.
  */
 
+import type { Token } from "../types/token";
+
 // create array of tokens
-export function tokenize(string) {
+export function tokenize(string: string) {
   const operators = ['+', '-', '*', '/', '%'];
   const outputSeparators = [';', ','];
   const types = ['$', '%'];
@@ -123,13 +125,20 @@ export function tokenize(string) {
 }
 
 // replace variables with their values
-export function substituteVariables(tokens, variables) {
+export function substituteVariables(tokens: Token[], variables: Record<string, string | number>): Token[] {
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
+
     if (token.type === 'variable') {
+      const value = variables[String(token.value)];
+
+      if (value === undefined) {
+        throw new Error(`Undefined variable: ${token.value}`);
+      }
+
       tokens[i] = {
-        value: variables[token.value],
-        type: typeof variables[token.value],
+        value,
+        type: typeof value === 'number' ? 'number' : 'string',
       };
     }
   }
@@ -138,9 +147,9 @@ export function substituteVariables(tokens, variables) {
 }
 
 // calculate expressions
-export function parse(tokens) {
+export function parse(tokens: Token[]): string {
   let output = '';
-  let calculation = null;
+  let calculation: string | null = null;
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
@@ -150,9 +159,11 @@ export function parse(tokens) {
       continue;
     }
 
-    if (calculation && (token.type === 'separator' || i === tokens.length - 1)) {
-      // execute calculation
-      if (i === tokens.length - 1) calculation += token.value;
+    if (calculation !== null && (token.type === 'separator' || i === tokens.length - 1)) {
+      if (i === tokens.length - 1) {
+        calculation += String(token.value);
+      }
+
       output += eval(calculation);
       output += ' ';
       calculation = null;
@@ -164,31 +175,34 @@ export function parse(tokens) {
     }
 
     if (token.type === 'number') {
-      if (calculation) {
-        calculation += token.value;
+      if (calculation !== null) {
+        calculation += String(token.value);
         continue;
       }
-      if (tokens[i + 1] && tokens[i + 1].type === 'operator') {
-        calculation = token.value;
+
+      if (tokens[i + 1]?.type === 'operator') {
+        calculation = String(token.value);
         continue;
       }
+
       output += token.value;
       continue;
     }
 
     if (token.type === 'operator') {
-      if (calculation) {
-        calculation += token.value;
+      if (calculation !== null) {
+        calculation += String(token.value);
         continue;
       }
     }
   }
+
   console.log(output);
   return output;
 }
 
 // determine variable type by variable name
-export function determineVariableType(variableName) {
+export function determineVariableType(variableName: string) {
   if (variableName.slice(-1) === '$') {
     return 'string';
   }
@@ -199,7 +213,7 @@ export function determineVariableType(variableName) {
 }
 
 // get variable type by prompt
-export function assignVariableType(prompt) {
+export function assignVariableType(prompt: string) {
   const trimmed = prompt.trim();
 
   if (/^[-+]?\d+$/.test(trimmed)) {
@@ -214,7 +228,7 @@ export function assignVariableType(prompt) {
 }
 
 // check if variable type is compatible with prompt type
-export function isTypeCompatible(variableName, prompt) {
+export function isTypeCompatible(variableName: string, prompt: string) {
   const expectedType = determineVariableType(variableName);
   const actualType = assignVariableType(prompt);
 
@@ -233,18 +247,20 @@ export function isTypeCompatible(variableName, prompt) {
   return true;
 }
 
-export function convertToType(value, type) {
+export function convertToType(value: string, type: string): string | number {
   const trimmed = value.trim();
 
   if (type === 'string') {
-    return trimmed.toString();
+    return trimmed;
   }
 
   if (type === 'integer') {
-    return Math.trunc(trimmed);
+    return Math.trunc(parseInt(trimmed, 10));
   }
 
   if (type === 'float') {
     return parseFloat(trimmed);
   }
+
+  throw new Error(`Unknown variable type: ${type}`);
 }

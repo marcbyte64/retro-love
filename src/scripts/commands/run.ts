@@ -1,8 +1,8 @@
-import * as storage from '../app/storage.js';
-import { commandTypes, inputModes } from '../app/constants.js';
-import { programState } from '../app/state.js';
-import { dom } from '../ui/dom.js';
-import { waitForUserInput } from './input.js';
+import * as storage from '../app/storage';
+import { commandType, inputMode } from '../app/constants';
+import { programState } from '../app/state';
+import { dom } from '../ui/dom';
+import { waitForUserInput } from './input';
 
 // debounce
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -27,21 +27,21 @@ export async function RUN() {
     }
 
     // check if error was thrown
-    if (answer.type === commandTypes.ERROR) {
+    if (answer.type === commandType.ERROR) {
       programState.isInputEnabled = true;
       dom.outputLine('?Syntax Error');
       return;
     }
 
     // execute GOTO
-    if (answer.type === commandTypes.GOTO) {
+    if (answer.type === commandType.GOTO) {
       i = answer.value - 1;
       sleepTime = 0;
     }
 
     // execute INPUT
-    if (answer.type === commandTypes.INPUT) {
-      programState.activeInputMode = inputModes.INPUTVAR;
+    if (answer.type === commandType.INPUT) {
+      programState.activeInputMode = inputMode.INPUTVAR;
       programState.isInputEnabled = true;
 
       for (let j = 0; j < answer.value.length; j++) {
@@ -52,7 +52,7 @@ export async function RUN() {
         }
       }
 
-      programState.activeInputMode = inputModes.PROMPT;
+      programState.activeInputMode = inputMode.PROMPT;
       programState.isInputEnabled = false;
     }
 
@@ -61,5 +61,5 @@ export async function RUN() {
   }
 
   programState.isInputEnabled = true;
-  return { type: commandTypes.DEFAULT, value: null };
+  return { type: commandType.DEFAULT, value: null };
 }

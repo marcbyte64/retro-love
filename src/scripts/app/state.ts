@@ -1,7 +1,7 @@
-import { inputModes } from "./constants";
+import { inputMode } from "./constants";
 
 export const programState = {
-  activeInputMode: inputModes.PROMPT,
+  activeInputMode: inputMode.PROMPT,
   isInputEnabled: true,
   abortProgram: false,
 };
