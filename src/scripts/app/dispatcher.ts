@@ -18,9 +18,9 @@ function createDispatcher() {
 
     if (lineNumberMatch !== null) {
       const lineNumber = Number(lineNumberMatch[1]);
-      const { fn, args } = validatedCommand;
+      const { name, fn, args } = validatedCommand;
 
-      storage.storeCommand({ lineNumber, fn, args });
+      storage.storeCommand({lineNumber, name, fn, args,});
       dom.resetInput(false);
     } else {
       validatedCommand.fn(validatedCommand.args).then(() => {
@@ -31,17 +31,13 @@ function createDispatcher() {
 
   function validateCommand(commandText: string) {
     const space = commandText.indexOf(' ');
-    let command, args;
+    const command = commandText.slice(0, space);
+    const args = space === -1 ? '' : commandText.slice(space + 1);
 
-    if (space !== -1) {
-      command = commandText.slice(0, space);
-      args = space !== -1 ? commandText.slice(space + 1) : null;
-    } else {
-      command = commandText;
-      args = null;
+    // lookup and validate command
+    if (!isCommandName(command)) {
+      return false;
     }
-
-    // check if cmd exists and arguments match
     const result = commands[command];
 
     if (!result) return false;
@@ -50,9 +46,14 @@ function createDispatcher() {
 
     return {
       valid: isValid,
+      name: command,
       fn: result.fn,
-      args: args,
+      args,
     };
+  }
+
+  function isCommandName(name: string): name is keyof typeof commands {
+    return Object.prototype.hasOwnProperty.call(commands, name);
   }
 
   return { dispatchCommand };

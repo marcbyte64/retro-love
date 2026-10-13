@@ -1,28 +1,26 @@
 {
-	"name": "retro-love",
-	"version": "1.0.0",
-	"description": "",
-	"main": "script.min.js",
-	"scripts": {
-		"dev": "vite",
-		"build": "tsc --noEmit && vite build",
-		"preview": "vite preview",
-		"typecheck": "tsc --noEmit"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/darQrrR/retro-love.git"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/darQrrR/retro-love/issues"
-	},
-	"homepage": "https://github.com/darQrrR/retro-love#readme",
-	"devDependencies": {
-		"sass": "^1.97.3",
-		"typescript": "^7.0.2",
-		"vite": "^7.3.1"
-	}
+  "name": "retro-love",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcbyte64/retro-love.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marcbyte64/retro-love/issues"
+  },
+  "homepage": "https://github.com/marcbyte64/retro-love#readme",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.97.3",
+    "typescript": "^7.0.2",
+    "vite": "^7.3.1"
+  }
 }

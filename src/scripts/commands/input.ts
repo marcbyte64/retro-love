@@ -1,9 +1,10 @@
+import type { CommandResult } from '../types/command';
 import { commandType } from '../app/constants';
 import { storeVariable } from '../app/storage';
 import * as strings from '../../scripts/utils/strings';
 import { dom } from '../ui/dom';
 
-export async function INPUT(args: string) {
+export async function INPUT(args: string): Promise<CommandResult> {
   const tokens = strings.tokenize(args);
 
   // check if input starts with prompt request

@@ -1,3 +1,5 @@
+import { CommandHandler } from '../types/command';
+
 import { RUN } from './run';
 import { GOTO } from './goto';
 import { IF } from './if';
@@ -9,7 +11,12 @@ import { CLR } from './clr';
 import { REM } from './rem';
 import { EXIT } from './exit';
 
-export const commands = {
+type CommandDefinition = {
+  args: number;
+  fn: CommandHandler;
+};
+
+export const commands: Record<string, CommandDefinition> = {
   run: { args: 0, fn: RUN }, // run stored prompts
   goto: { args: 1, fn: GOTO }, // jump to line
   if: { args: 1, fn: IF }, // if statement

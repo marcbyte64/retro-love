@@ -1,3 +1,4 @@
+import type { CommandResult } from '../types/command';
 import * as storage from '../app/storage';
 import { commandType, inputMode } from '../app/constants';
 import { programState } from '../app/state';
@@ -5,10 +6,12 @@ import { dom } from '../ui/dom';
 import { waitForUserInput } from './input';
 
 // debounce
-const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-export async function RUN() {
-  if (!storage.commandStorage.length) return;
+export async function RUN(): Promise<CommandResult> {
+  if (!storage.commandStorage.length) {
+    return { type: commandType.DEFAULT, value: null };
+  }
 
   const numPrompts = storage.commandStorage.length;
   programState.isInputEnabled = false;
@@ -23,14 +26,14 @@ export async function RUN() {
     if (programState.abortProgram) {
       programState.abortProgram = false;
       programState.isInputEnabled = true;
-      return;
+      return { type: commandType.DEFAULT, value: null };
     }
 
     // check if error was thrown
     if (answer.type === commandType.ERROR) {
       programState.isInputEnabled = true;
       dom.outputLine('?Syntax Error');
-      return;
+      return { type: commandType.ERROR, value: null }
     }
 
     // execute GOTO
@@ -46,7 +49,7 @@ export async function RUN() {
 
       for (let j = 0; j < answer.value.length; j++) {
         try {
-          await waitForUserInput(answer.value[j].value);
+          await waitForUserInput(String(answer.value[j].value));
         } catch (err) {
           j--;
         }

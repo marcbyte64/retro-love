@@ -11,11 +11,11 @@
 import type { Token } from "../types/token";
 
 // create array of tokens
-export function tokenize(string: string) {
+export function tokenize(string: string): Token[] {
   const operators = ['+', '-', '*', '/', '%'];
   const outputSeparators = [';', ','];
   const types = ['$', '%'];
-  let tokens = [];
+  const tokens: Token[] = [];
   let buffer = '';
   let stringmode = false;
   let nummode = false;
