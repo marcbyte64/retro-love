@@ -22,7 +22,7 @@ export async function INPUT(args: string) {
     index % 2 === 0 ? value.type === 'variable' : true,
   );
 
-  if (lastElement.type !== 'variable') {
+  if (!lastElement || lastElement.type !== 'variable') {
     return { type: commandType.ERROR, value: null };
   }
 
