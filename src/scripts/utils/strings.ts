@@ -13,6 +13,7 @@ import type { Token } from "../types/token";
 // create array of tokens
 export function tokenize(string: string): Token[] {
   const operators = ['+', '-', '*', '/', '%'];
+  const comparisonOperators = ['=', '<>', '<', '<=', '>', '>='];
   const outputSeparators = [';', ','];
   const types = ['$', '%'];
   const tokens: Token[] = [];
@@ -115,6 +116,11 @@ export function tokenize(string: string): Token[] {
       tokens.push({ value: char, type: 'operator' });
     }
 
+    // comparison operators
+    if (comparisonOperators.includes(char)) {
+      tokens.push({ value: char, type: 'comparisonoperator' });
+    }
+
     // separators
     if (outputSeparators.includes(char)) {
       tokens.push({ value: char, type: 'separator' });
@@ -198,7 +204,7 @@ export function parse(tokens: Token[]): string {
     }
   }
 
-  console.log(output);
+  //console.log(output);
   return output;
 }
 

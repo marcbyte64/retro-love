@@ -18,7 +18,7 @@ export async function RUN(): Promise<CommandResult> {
 
   for (let i = 0; i < numPrompts; i++) {
     const answer = await storage.commandStorage[i].fn(storage.commandStorage[i].args);
-    let sleepTime = 100;
+    let sleepTime = 10;
 
     dom.clearInput();
 
