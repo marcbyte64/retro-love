@@ -164,6 +164,7 @@ export function parse(tokens: Token[]): string {
         calculation += String(token.value);
       }
 
+      // TODO: replace eval with safe BASIC expression evaluator
       output += eval(calculation);
       output += ' ';
       calculation = null;

@@ -5,11 +5,16 @@ import * as storage from './storage';
 function createDispatcher() {
   function dispatchCommand(prompt: string) {
     const lineNumberMatch = prompt.match(/^(\d+)\s/);
-    const lineNumber = lineNumberMatch ? Number(lineNumberMatch[1]) : null;
     const commandText = lineNumberMatch ? prompt.slice(lineNumberMatch[0].length) : prompt;
     const validatedCommand = validateCommand(commandText);
 
-    // todo: clean up
+    // newline
+    if (commandText === "") {
+      dom.resetInput(false);
+      return;
+    }
+
+    // invalid command
     if (!validatedCommand || !validatedCommand.valid) {
       dom.outputLine(`?Syntax Error`);
       dom.resetInput(true);
@@ -31,7 +36,7 @@ function createDispatcher() {
 
   function validateCommand(commandText: string) {
     const space = commandText.indexOf(' ');
-    const command = commandText.slice(0, space);
+    const command = commandText.slice(0, space === -1 ? undefined : space);
     const args = space === -1 ? '' : commandText.slice(space + 1);
 
     // lookup and validate command

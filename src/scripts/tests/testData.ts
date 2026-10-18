@@ -13,7 +13,7 @@ export function injectTestData() {
 
   const testPrompts = [
     '10 print "HELLO " + "WORLD"; A + 2.1; 40 + 2 4 * 3; C$; A, B, D%',
-    '20 print "--------"',
+    //'20 print "--------"',
     //'30 goto 10',
     //'5 if 5 > 1 then print "5 is greater than 1"',
     //'10 input "Enter 2 Numbers?"; A, B%',
