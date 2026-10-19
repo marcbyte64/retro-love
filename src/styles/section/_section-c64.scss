@@ -1,89 +1,86 @@
 #section-c64 {
-	font-family: 'Kommondore', monospace;
-	background-color: var(--color-c64-dark);
-	height: calc(100vh - 90px);
-	color: var(--color-c64-light);
-	margin: 30px;
-	padding: 15px 5px;
-	text-transform: uppercase;
-	line-height: 2;
+  font-family: "Kommondore", monospace;
+  background-color: var(--color-c64-dark);
+  height: calc(100vh - 90px);
+  color: var(--color-c64-light);
+  margin: 30px;
+  padding: 15px 15px;
+  text-transform: uppercase;
+  line-height: 2;
 
-	header {
-		text-align: center;
-	}
+  header {
+    text-align: center;
+  }
 
-	&::before {
-		content: '';
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
-		background-color: var(--color-c64-light);
-		z-index: -1;
-	}
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: var(--color-c64-light);
+    z-index: -1;
+  }
 
-	&::after {
-		content: '';
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
-		background: repeating-linear-gradient(
-			transparent 0px 1px,
-			hsl(154 0% 0%/0.35) 3px 4px
-		);
-		opacity: 0.2;
-		pointer-events: none;
-	}
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: repeating-linear-gradient(transparent 0px 1px, hsl(154 0% 0%/0.35) 3px 4px);
+    opacity: 0.2;
+    pointer-events: none;
+  }
 
-	.prompt {
-		position: relative;
-		width: fit-content;
+  .prompt {
+    position: relative;
+    width: fit-content;
 
-		&::after {
-			content: ' ';
-			position: absolute;
-			bottom: 0px;
-			left: calc(100% + 2px);
-			width: 14px;
-			height: 17px;
-			background-color: var(--color-c64-light);
-			animation: blink 1s infinite;
-		}
+    &::after {
+      content: " ";
+      position: absolute;
+      bottom: 0px;
+      left: calc(100% + 2px);
+      width: 14px;
+      height: 17px;
+      background-color: var(--color-c64-light);
+      animation: blink 1s infinite;
+    }
 
-		.input {
-			width: 0;
-			padding: 0;
-			border: 0;
-			background-color: transparent;
-			color: var(--color-c64-light);
-			font-family: 'Kommondore', monospace;
-			font-size: 1rem;
-			text-transform: uppercase;
-			outline: none;
-			caret-color: transparent;
-		}
-	}
+    .input {
+      width: 0;
+      padding: 0;
+      border: 0;
+      background-color: transparent;
+      color: var(--color-c64-light);
+      font-family: "Kommondore", monospace;
+      font-size: 1rem;
+      text-transform: uppercase;
+      outline: none;
+      caret-color: transparent;
+    }
+  }
 
-	.output {
-		width: 100%;
-		//height: 24px;
-		max-height: calc(100vh - 160px);
-		padding: 0;
-		margin-top: -4px;
-		margin-bottom: 4px;
-		border: 0;
-		background-color: transparent;
-		color: var(--color-c64-light);
-		font-family: 'Kommondore', monospace;
-		font-size: 1rem;
-		text-transform: uppercase;
-		outline: none;
-		resize: none;
-		line-height: 1.5;
-		overflow: hidden;
-		field-sizing: content;
-	}
+  .output {
+    width: 100%;
+    //height: 24px;
+    max-height: calc(100vh - 160px);
+    padding: 0;
+    margin-top: -4px;
+    margin-bottom: 4px;
+    border: 0;
+    background-color: transparent;
+    color: var(--color-c64-light);
+    font-family: "Kommondore", monospace;
+    font-size: 1rem;
+    text-transform: uppercase;
+    outline: none;
+    resize: none;
+    line-height: 1.5;
+    overflow: hidden;
+    field-sizing: content;
+  }
 }
