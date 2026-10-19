@@ -1,6 +1,6 @@
-import type { CommandResult } from '../types/command';
-import { commandType } from '../app/constants';
-import * as storage from '../app/storage';
+import type { CommandResult } from "../types/command";
+import { commandType } from "../app/constants";
+import * as storage from "../app/storage";
 
 export async function GOTO(args: string): Promise<CommandResult> {
   const targetLineNumber = Number(args.trim());

@@ -1,5 +1,5 @@
 // import scss structure
-import './styles/main.scss';
+import "./styles/main.scss";
 
 // import js structure
-import './scripts/app';
+import "./scripts/app";

@@ -1,8 +1,8 @@
 import { getElement } from "../utils/html";
 
 function createDom() {
-  const input = getElement<HTMLInputElement>('.input');
-  const output = getElement<HTMLTextAreaElement>('.output');
+  const input = getElement<HTMLInputElement>(".input");
+  const output = getElement<HTMLTextAreaElement>(".output");
 
   function outputLine(value: string | number): void {
     output.value += `\n${value}`;
@@ -10,12 +10,12 @@ function createDom() {
   }
 
   function clearOutput(): void {
-    output.value = '';
+    output.value = "";
   }
 
   function clearInput(): void {
-    input.value = '';
-    input.style.width = '0px';
+    input.value = "";
+    input.style.width = "0px";
   }
 
   function resetInput(ready = false): void {

@@ -1,6 +1,6 @@
-import { dom } from '../ui/dom';
-import { commands } from '../commands/index';
-import * as storage from './storage';
+import { dom } from "../ui/dom";
+import { commands } from "../commands/index";
+import * as storage from "./storage";
 
 function createDispatcher() {
   function dispatchCommand(prompt: string) {
@@ -25,19 +25,24 @@ function createDispatcher() {
       const lineNumber = Number(lineNumberMatch[1]);
       const { name, fn, args } = validatedCommand;
 
-      storage.storeCommand({lineNumber, name, fn, args,});
+      storage.storeCommand({ lineNumber, name, fn, args });
       dom.resetInput(false);
     } else {
-      validatedCommand.fn(validatedCommand.args).then(() => {
-        dom.resetInput(true);
-      });
+      void validatedCommand
+        .fn(validatedCommand.args)
+        .then(() => {
+          dom.resetInput(true);
+        })
+        .catch((error: unknown) => {
+          console.error("Command execution failed:", error);
+        });
     }
   }
 
   function validateCommand(commandText: string) {
-    const space = commandText.indexOf(' ');
+    const space = commandText.indexOf(" ");
     const command = commandText.slice(0, space === -1 ? undefined : space);
-    const args = space === -1 ? '' : commandText.slice(space + 1);
+    const args = space === -1 ? "" : commandText.slice(space + 1);
 
     // lookup and validate command
     if (!isCommandName(command)) {

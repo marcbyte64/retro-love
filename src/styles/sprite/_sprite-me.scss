@@ -1,22 +1,22 @@
 .sprite-me {
-	position: fixed;
-	bottom: 20px;
-	right: 20px;
-	width: 200px;
-	height: 200px;
-	background-image: url('/assets/images/sprites/avatar-walk.png');
-	background-repeat: no-repeat;
-	background-size: 5600px 200px;
-	image-rendering: pixelated;
-	animation: play 1s steps(28) infinite;
-	transform: scale(0.75);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 200px;
+  height: 200px;
+  background-image: url("/assets/images/sprites/avatar-walk.png");
+  background-repeat: no-repeat;
+  background-size: 5600px 200px;
+  image-rendering: pixelated;
+  animation: play 1s steps(28) infinite;
+  transform: scale(0.75);
 }
 
 @keyframes play {
-	from {
-		background-position: 0 0;
-	}
-	to {
-		background-position: -5600px 0;
-	}
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -5600px 0;
+  }
 }

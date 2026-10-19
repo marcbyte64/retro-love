@@ -1,15 +1,15 @@
-import { CommandHandler } from '../types/command';
+import { CommandHandler } from "../types/command";
 
-import { RUN } from './run';
-import { GOTO } from './goto';
-import { IF } from './if';
-import { INPUT } from './input';
-import { GET } from './get';
-import { PRINT } from './print';
-import { LIST } from './list';
-import { CLR } from './clr';
-import { REM } from './rem';
-import { EXIT } from './exit';
+import { RUN } from "./run";
+import { GOTO } from "./goto";
+import { IF } from "./if";
+import { INPUT } from "./input";
+import { GET } from "./get";
+import { PRINT } from "./print";
+import { LIST } from "./list";
+import { CLR } from "./clr";
+import { REM } from "./rem";
+import { EXIT } from "./exit";
 
 type CommandDefinition = {
   args: number;

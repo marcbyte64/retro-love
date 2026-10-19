@@ -1,5 +1,5 @@
-import { commandType } from '../app/constants';
-import type { Token } from './token';
+import { commandType } from "../app/constants";
+import type { Token } from "./token";
 
 export type CommandResult =
   | { type: commandType.DEFAULT; value: null }

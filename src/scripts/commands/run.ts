@@ -1,9 +1,9 @@
-import type { CommandResult } from '../types/command';
-import * as storage from '../app/storage';
-import { commandType, inputMode } from '../app/constants';
-import { programState } from '../app/state';
-import { dom } from '../ui/dom';
-import { waitForUserInput } from './input';
+import type { CommandResult } from "../types/command";
+import * as storage from "../app/storage";
+import { commandType, inputMode } from "../app/constants";
+import { programState } from "../app/state";
+import { dom } from "../ui/dom";
+import { waitForUserInput } from "./input";
 
 // debounce
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -32,8 +32,8 @@ export async function RUN(): Promise<CommandResult> {
     // check if error was thrown
     if (answer.type === commandType.ERROR) {
       programState.isInputEnabled = true;
-      dom.outputLine('?Syntax Error');
-      return { type: commandType.ERROR, value: null }
+      dom.outputLine("?Syntax Error");
+      return { type: commandType.ERROR, value: null };
     }
 
     // execute GOTO
@@ -51,6 +51,7 @@ export async function RUN(): Promise<CommandResult> {
         try {
           await waitForUserInput(String(answer.value[j].value));
         } catch (err) {
+          console.error(err);
           j--;
         }
       }

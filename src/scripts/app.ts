@@ -7,7 +7,11 @@ dom.resetInput(true);
 
 // import test-data in dev-env
 if (import.meta.env.DEV) {
-  import("./tests/dummyData").then(({ injectTestData }) => {
-    injectTestData();
-  });
+  void import("./tests/dummyData")
+    .then(({ injectTestData }) => {
+      injectTestData();
+    })
+    .catch((error: unknown) => {
+      console.error("Failed to load test data:", error);
+    });
 }

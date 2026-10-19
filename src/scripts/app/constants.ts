@@ -3,9 +3,9 @@ export enum commandType {
   GOTO,
   INPUT,
   ERROR,
-};
+}
 
 export enum inputMode {
   PROMPT,
   INPUTVAR,
-};
+}

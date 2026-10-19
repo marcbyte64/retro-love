@@ -1,8 +1,8 @@
-import type { CommandResult } from '../types/command';
-import { commandType } from '../app/constants';
-import * as storage from '../app/storage';
-import { dom } from '../ui/dom';
-import * as strings from '../../scripts/utils/strings';
+import type { CommandResult } from "../types/command";
+import { commandType } from "../app/constants";
+import * as storage from "../app/storage";
+import { dom } from "../ui/dom";
+import * as strings from "../../scripts/utils/strings";
 
 export async function PRINT(args: string): Promise<CommandResult> {
   if (args) {
