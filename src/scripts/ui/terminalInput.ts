@@ -12,7 +12,7 @@ function updateInputSize(): void {
 }
 
 function submitPrompt(): void {
-  const value = dom.input.value.trim();
+  const value = dom.input.value.trim().toLowerCase();
 
   dom.clearInput();
   dom.outputLine(value);

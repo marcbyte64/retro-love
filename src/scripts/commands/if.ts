@@ -8,11 +8,12 @@ export async function IF(args: string): Promise<CommandResult> {
   const tokens = strings.tokenize(args);
   const validOperands = ["variable", "string", "number"];
 
-  //console.log(tokens);
+  console.log(tokens);
 
   if (
-    !validOperands.includes(tokens[0].type) ||
-    !validOperands.includes(tokens[2].type || tokens[1].type !== "comparisonoperator")
+    !validOperands.includes(tokens[0]?.type) ||
+    !validOperands.includes(tokens[2]?.type) ||
+    tokens[1]?.type !== "comparisonoperator"
   ) {
     return { type: commandType.ERROR, value: null };
   }

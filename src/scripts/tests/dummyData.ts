@@ -20,8 +20,14 @@ export function injectTestData() {
     //'20 print "The sum of " ; A ; " and " ; B% ; " is " ; A + B%',
     //'30 goto 10',
 
+    "10 if 1 <= 2 then 50",
+    '20 print "hello"',
+    '50 print "bye"',
+
     // HOME
-    "0 clr",
+    /*"0 clr",
+    '1 PRINT "YOLO"',
+    '2 print "SOLO"',
     '10 print "\n\n"',
     '20 print "== WELCOME TO MY WEBSITE ==\n"',
 
@@ -75,7 +81,7 @@ export function injectTestData() {
     "1920 if A=2 then 2000",
     "1930 if A=3 then 3000",
     "1930 if A=4 then 4000",
-    "1930 if A=5 then 5000",
+    "1930 if A=5 then 5000",*/
   ];
 
   // inject test prompts

@@ -117,8 +117,14 @@ export function tokenize(string: string): Token[] {
     }
 
     // comparison operators
-    if (comparisonOperators.includes(char)) {
-      tokens.push({ value: char, type: "comparisonoperator" });
+    const operator = comparisonOperators.includes(string.slice(i, i + 2))
+      ? string.slice(i, i + 2)
+      : char;
+
+    if (comparisonOperators.includes(operator)) {
+      tokens.push({ value: operator, type: "comparisonoperator" });
+      i += operator.length - 1;
+      continue;
     }
 
     // separators
