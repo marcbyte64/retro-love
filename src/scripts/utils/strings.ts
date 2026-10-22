@@ -9,6 +9,7 @@
  */
 
 import type { Token } from "../types/token";
+import { commands, keywords } from "../commands/index";
 
 // create array of tokens
 export function tokenize(string: string): Token[] {
@@ -47,6 +48,18 @@ export function tokenize(string: string): Token[] {
       isInMode = false;
     }
     // turn varmode off
+    if (Object.hasOwn(commands, buffer)) {
+      tokens.push({ value: buffer, type: "command" });
+      buffer = "";
+      varmode = false;
+      isInMode = false;
+    }
+    if (keywords.includes(buffer)) {
+      tokens.push({ value: buffer, type: "keyword" });
+      buffer = "";
+      varmode = false;
+      isInMode = false;
+    }
     if ((!/^[A-Za-z]$/.test(char) || types.includes(char)) && varmode) {
       if (types.includes(char)) {
         buffer += char;

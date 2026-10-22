@@ -12,17 +12,19 @@ export function injectTestData() {
   };
 
   const testPrompts = [
-    //'10 print "HELLO " + "WORLD"; A + 2.1; 40 + 2 4 * 3; C$; A, B, D%',
-    //'20 print "--------"',
-    //'30 goto 10',
-    //'5 if 5 > 1 then print "5 is greater than 1"',
-    //'10 input "Enter 2 Numbers?"; A, B%',
-    //'20 print "The sum of " ; A ; " and " ; B% ; " is " ; A + B%',
-    //'30 goto 10',
-
-    "10 if 1 <= 2 then 50",
-    '20 print "hello"',
-    '50 print "bye"',
+    //'10 if 5 > 4 then print "20"',
+    //'20 if 5 > 3 then print A',
+    '10 print "hello"',
+    '20 if 1 = 1 then print "world"',
+    "30 if 1 = 1 or 2 = 3 then 10",
+    '40 print "end"',
+    // '10 print "HELLO " + "WORLD"; A + 2.1; 40 + 2 4 * 3; C$; A, B, D%',
+    // '20 print "--------"',
+    // '30 goto 10',
+    // '5 if 5 > 1 then print "5 is greater than 1"',
+    // '10 input "Enter 2 Numbers?"; A, B%',
+    // '20 print "The sum of " ; A ; " and " ; B% ; " is " ; A + B%',
+    // '30 goto 10',
 
     // HOME
     /*"0 clr",

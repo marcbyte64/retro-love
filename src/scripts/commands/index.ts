@@ -28,3 +28,5 @@ export const commands: Record<string, CommandDefinition> = {
   rem: { args: 1, fn: REM }, // comment
   exit: { args: 0, fn: EXIT }, // exit program
 };
+
+export const keywords = ["or", "and", "then"];
