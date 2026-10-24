@@ -182,51 +182,45 @@ export function parse(tokens: Token[]): string {
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
 
+    // finish calculation before a non-arithmetic token
+    if (calculation !== null && token.type !== "number" && token.type !== "operator") {
+      // TODO: replace eval with safe BASIC expression evaluator
+      output += eval(calculation);
+      calculation = null;
+    }
+
     if (token.type === "string") {
       output += token.value;
       continue;
     }
 
-    if (calculation !== null && (token.type === "separator" || i === tokens.length - 1)) {
-      if (i === tokens.length - 1) {
-        calculation += String(token.value);
-      }
-
-      // TODO: replace eval with safe BASIC expression evaluator
-      output += eval(calculation);
-      output += " ";
-      calculation = null;
-      continue;
-    }
-
     if (token.type === "separator") {
       output += " ";
+      continue;
     }
 
     if (token.type === "number") {
       if (calculation !== null) {
         calculation += String(token.value);
-        continue;
-      }
-
-      if (tokens[i + 1]?.type === "operator") {
+      } else if (tokens[i + 1]?.type === "operator") {
         calculation = String(token.value);
-        continue;
+      } else {
+        output += token.value;
       }
 
-      output += token.value;
       continue;
     }
 
-    if (token.type === "operator") {
-      if (calculation !== null) {
-        calculation += String(token.value);
-        continue;
-      }
+    if (token.type === "operator" && calculation !== null) {
+      calculation += String(token.value);
     }
   }
 
-  //console.log(output);
+  // finish calculation at end of input
+  if (calculation !== null) {
+    output += eval(calculation);
+  }
+
   return output;
 }
 
