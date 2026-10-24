@@ -16,23 +16,23 @@ export async function IF(args: string): Promise<CommandResult> {
   //console.log(tokens);
 
   for (let i = 0; i < tokens.length; i++) {
-    let answer: ComparisonResult = { type: "success", value: false };
+    let comparison: ComparisonResult = { type: "success", value: false };
 
     if (i === 0) {
-      answer = validate(tokens[i], tokens[i + 2], tokens[i + 1]);
+      comparison = evaluateComparison(tokens[i], tokens[i + 2], tokens[i + 1]);
       i += 3;
     }
 
     if (tokens[i].type === "keyword" && tokens[i].value === "or") {
-      answer = validate(tokens[i + 1], tokens[i + 3], tokens[i + 2]);
+      comparison = evaluateComparison(tokens[i + 1], tokens[i + 3], tokens[i + 2]);
       i += 4;
     }
 
-    if (answer.type === "error") {
+    if (comparison.type === "error") {
       return { type: commandType.ERROR, value: null };
     }
 
-    if (!answer.value) {
+    if (!comparison.value) {
       return { type: commandType.DEFAULT, value: null };
     }
 
@@ -58,7 +58,7 @@ export async function IF(args: string): Promise<CommandResult> {
   return { type: commandType.DEFAULT, value: null };
 }
 
-function validate(operand1: Token, operand2: Token, operator: Token): ComparisonResult {
+function evaluateComparison(operand1: Token, operand2: Token, operator: Token): ComparisonResult {
   const validOperands = ["string", "number", "variable"];
 
   if (
@@ -70,11 +70,11 @@ function validate(operand1: Token, operand2: Token, operator: Token): Comparison
   }
 
   // prepare variables and arguments
-  const op1Val =
+  const leftValue =
     operand1.type === "variable"
       ? strings.substituteVariables([operand1], storage.variableStorage)[0].value
       : operand1.value;
-  const op2Val =
+  const rightValue =
     operand2.type === "variable"
       ? strings.substituteVariables([operand2], storage.variableStorage)[0].value
       : operand2.value;
@@ -82,17 +82,17 @@ function validate(operand1: Token, operand2: Token, operator: Token): Comparison
 
   // compare operands via operator
   // TODO: determineVariableType and throw mismatch error?
-  if (operator.value === "=" && op1Val == op2Val) {
+  if (operator.value === "=" && leftValue == rightValue) {
     isTrue = true;
-  } else if (operator.value === "<>" && op1Val != op2Val) {
+  } else if (operator.value === "<>" && leftValue != rightValue) {
     isTrue = true;
-  } else if (operator.value === "<" && op1Val < op2Val) {
+  } else if (operator.value === "<" && leftValue < rightValue) {
     isTrue = true;
-  } else if (operator.value === "<=" && op1Val <= op2Val) {
+  } else if (operator.value === "<=" && leftValue <= rightValue) {
     isTrue = true;
-  } else if (operator.value === ">" && op1Val > op2Val) {
+  } else if (operator.value === ">" && leftValue > rightValue) {
     isTrue = true;
-  } else if (operator.value === ">=" && op1Val >= op2Val) {
+  } else if (operator.value === ">=" && leftValue >= rightValue) {
     isTrue = true;
   }
 
