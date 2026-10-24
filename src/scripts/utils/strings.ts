@@ -125,6 +125,7 @@ export function tokenize(string: string): Token[] {
     // operators
     if (operators.includes(char)) {
       tokens.push({ value: char, type: "operator" });
+      continue;
     }
 
     // comparison operators
@@ -141,6 +142,12 @@ export function tokenize(string: string): Token[] {
     // separators
     if (outputSeparators.includes(char)) {
       tokens.push({ value: char, type: "separator" });
+      continue;
+    }
+
+    // reject unknown characters
+    if (char !== undefined) {
+      throw new Error(`Unexpected character: ${char}`);
     }
   }
 

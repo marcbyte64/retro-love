@@ -12,9 +12,15 @@ type ComparisonResult = {
 };
 
 export async function IF(args: string): Promise<CommandResult> {
-  const tokens = strings.tokenize(args);
+  let tokens: Token[];
   let isResolved = false;
   let comparison: ComparisonResult = { type: "success", value: false };
+
+  try {
+    tokens = strings.tokenize(args);
+  } catch {
+    return { type: commandType.ERROR, value: null };
+  }
 
   for (let i = 0; i < tokens.length;) {
     // evaluate first statement
