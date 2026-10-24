@@ -6,15 +6,19 @@ import { dom } from "../ui/dom";
 import * as strings from "../utils/strings";
 
 export async function PRINT(args: string | Token[]): Promise<CommandResult> {
-  const tokens = typeof args === "string" ? strings.tokenize(args) : args;
+  try {
+    const tokens = typeof args === "string" ? strings.tokenize(args) : args;
 
-  if (tokens.length) {
-    const resolved = strings.substituteVariables(tokens, storage.variableStorage);
-    const output = strings.parse(resolved);
-    dom.outputLine(output);
-  } else {
-    dom.outputLine("");
+    if (tokens.length) {
+      const resolved = strings.substituteVariables(tokens, storage.variableStorage);
+      const output = strings.parse(resolved);
+      dom.outputLine(output);
+    } else {
+      dom.outputLine("");
+    }
+
+    return { type: commandType.DEFAULT, value: null };
+  } catch {
+    return { type: commandType.ERROR, value: null };
   }
-
-  return { type: commandType.DEFAULT, value: null };
 }
