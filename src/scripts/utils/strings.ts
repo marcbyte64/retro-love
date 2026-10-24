@@ -99,7 +99,7 @@ export function tokenize(string: string): Token[] {
 
     // add number to number-buffer
     if (/^[0-9.]$/.test(char) && nummode) {
-      // if decimal is already set, start new number
+      // reject multiple decimal points
       if (char === "." && buffer.includes(".")) {
         throw new Error("Invalid number");
       }
