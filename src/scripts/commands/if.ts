@@ -1,13 +1,13 @@
 import type { CommandResult } from "../types/command";
 import { commandType } from "../app/constants";
-import * as strings from "../../scripts/utils/strings";
+import * as strings from "../utils/strings";
 import * as storage from "../app/storage";
 import type { Token } from "../types/token";
 import { GOTO } from "./goto";
 import { PRINT } from "./print";
 
-type Answer = {
-  type: string;
+type ComparisonResult = {
+  type: "success" | "error";
   value: boolean;
 };
 
@@ -16,7 +16,7 @@ export async function IF(args: string): Promise<CommandResult> {
   //console.log(tokens);
 
   for (let i = 0; i < tokens.length; i++) {
-    let answer: Answer = { type: "success", value: false };
+    let answer: ComparisonResult = { type: "success", value: false };
 
     if (i === 0) {
       answer = validate(tokens[i], tokens[i + 2], tokens[i + 1]);
@@ -58,7 +58,7 @@ export async function IF(args: string): Promise<CommandResult> {
   return { type: commandType.DEFAULT, value: null };
 }
 
-function validate(operand1: Token, operand2: Token, operator: Token) {
+function validate(operand1: Token, operand2: Token, operator: Token): ComparisonResult {
   const validOperands = ["string", "number", "variable"];
 
   if (
@@ -72,11 +72,11 @@ function validate(operand1: Token, operand2: Token, operator: Token) {
   // prepare variables and arguments
   const op1Val =
     operand1.type === "variable"
-      ? strings.substituteVariables([operand1], storage.variableStorage)
+      ? strings.substituteVariables([operand1], storage.variableStorage)[0].value
       : operand1.value;
   const op2Val =
     operand2.type === "variable"
-      ? strings.substituteVariables([operand2], storage.variableStorage)
+      ? strings.substituteVariables([operand2], storage.variableStorage)[0].value
       : operand2.value;
   let isTrue = false;
 
