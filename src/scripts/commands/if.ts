@@ -13,31 +13,45 @@ type ComparisonResult = {
 
 export async function IF(args: string): Promise<CommandResult> {
   const tokens = strings.tokenize(args);
-  //console.log(tokens);
+  let isResolved = false;
 
-  for (let i = 0; i < tokens.length; i++) {
-    let comparison: ComparisonResult = { type: "success", value: false };
-
+  let comparison: ComparisonResult = { type: "success", value: false };
+  for (let i = 0; i < tokens.length;) {
+    // evaluate first statement
     if (i === 0) {
       comparison = evaluateComparison(tokens[i], tokens[i + 2], tokens[i + 1]);
       i += 3;
+      continue;
     }
 
-    if (tokens[i].type === "keyword" && tokens[i].value === "or") {
-      comparison = evaluateComparison(tokens[i + 1], tokens[i + 3], tokens[i + 2]);
-      i += 4;
-    }
-
+    // abort if arguments are invalid
     if (comparison.type === "error") {
       return { type: commandType.ERROR, value: null };
     }
 
-    if (!comparison.value) {
-      return { type: commandType.DEFAULT, value: null };
+    // evaluate or-statements
+    if (tokens[i].type === "keyword" && tokens[i].value === "or" && !isResolved) {
+      if (comparison.value) {
+        isResolved = true;
+      } else {
+        comparison = evaluateComparison(tokens[i + 1], tokens[i + 3], tokens[i + 2]);
+      }
+      i += 4;
+      continue;
+    }
+
+    // evaluate and-statements
+    if (tokens[i].type === "keyword" && tokens[i].value === "and" && !isResolved) {
+      if (comparison.value) {
+        comparison = evaluateComparison(tokens[i + 1], tokens[i + 3], tokens[i + 2]);
+      }
+      i += 4;
+      continue;
     }
 
     // then: check for move to line
     if (
+      comparison.value &&
       tokens[i].type === "keyword" &&
       (tokens[i].value === "then" || tokens[i].value === "goto") &&
       tokens[i + 1].type === "number"
@@ -47,12 +61,15 @@ export async function IF(args: string): Promise<CommandResult> {
 
     // then: check for execute follow-up command
     if (
+      comparison.value &&
       tokens[i].type === "keyword" &&
       tokens[i].value === "then" &&
       tokens[i + 1].value === "print"
     ) {
       return PRINT(`"${tokens[i + 2].value}"`);
     }
+
+    i++;
   }
 
   return { type: commandType.DEFAULT, value: null };
