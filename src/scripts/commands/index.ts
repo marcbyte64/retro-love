@@ -1,4 +1,4 @@
-import { CommandHandler } from "../types/command";
+import type { CommandHandler } from "../types/command";
 
 import { RUN } from "./run";
 import { GOTO } from "./goto";
@@ -17,16 +17,16 @@ type CommandDefinition = {
 };
 
 export const commands: Record<string, CommandDefinition> = {
-  run: { args: "none", fn: RUN }, // run stored prompts
-  goto: { args: "required", fn: GOTO }, // jump to line
-  if: { args: "required", fn: IF }, // if statement
-  input: { args: "required", fn: INPUT }, // input string
-  get: { args: "required", fn: GET }, // input string char by char
-  print: { args: "optional", fn: PRINT }, // print string
-  list: { args: "none", fn: LIST }, // list stored prompts
-  clr: { args: "none", fn: CLR }, // clear screen
-  rem: { args: "required", fn: REM }, // comment
-  exit: { args: "none", fn: EXIT }, // exit program
+  run: { args: "none", fn: RUN },
+  goto: { args: "required", fn: GOTO },
+  if: { args: "required", fn: IF },
+  input: { args: "required", fn: INPUT },
+  get: { args: "required", fn: GET },
+  print: { args: "optional", fn: PRINT },
+  list: { args: "none", fn: LIST },
+  clr: { args: "none", fn: CLR },
+  rem: { args: "required", fn: REM },
+  exit: { args: "none", fn: EXIT },
 };
 
 export const keywords = ["or", "and", "then"];
