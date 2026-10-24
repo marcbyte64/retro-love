@@ -13,7 +13,7 @@ import { commands, keywords } from "../commands/index";
 
 // create array of tokens
 export function tokenize(string: string): Token[] {
-  const operators = ["+", "-", "*", "/", "%"];
+  const operators = ["+", "-", "*", "/"];
   const comparisonOperators = ["=", "<>", "<", "<=", ">", ">="];
   const outputSeparators = [";", ","];
   const types = ["$", "%"];
@@ -84,7 +84,7 @@ export function tokenize(string: string): Token[] {
     }
 
     // add char to string-buffer
-    if (stringmode) {
+    if (stringmode && char !== undefined) {
       buffer += char;
       continue;
     }
@@ -101,9 +101,7 @@ export function tokenize(string: string): Token[] {
     if (/^[0-9.]$/.test(char) && nummode) {
       // if decimal is already set, start new number
       if (char === "." && buffer.includes(".")) {
-        tokens.push({ value: Number(buffer), type: "number" });
-        buffer = char;
-        continue;
+        throw new Error("Invalid number");
       }
 
       buffer += char;
@@ -146,6 +144,10 @@ export function tokenize(string: string): Token[] {
     }
   }
 
+  if (stringmode) {
+    tokens.push({ value: buffer, type: "string" });
+  }
+
   return tokens;
 }
 
@@ -185,6 +187,9 @@ export function parse(tokens: Token[]): string {
     // finish calculation before a non-arithmetic token
     if (calculation !== null && token.type !== "number" && token.type !== "operator") {
       // TODO: replace eval with safe BASIC expression evaluator
+      if (!/[0-9]$/.test(calculation)) {
+        throw new Error("Incomplete arithmetic expression");
+      }
       output += eval(calculation);
       calculation = null;
     }
@@ -211,13 +216,21 @@ export function parse(tokens: Token[]): string {
       continue;
     }
 
-    if (token.type === "operator" && calculation !== null) {
+    if (token.type === "operator") {
+      if (calculation === null || !/[0-9]$/.test(calculation)) {
+        throw new Error("Invalid arithmetic expression");
+      }
+
       calculation += String(token.value);
+      continue;
     }
   }
 
   // finish calculation at end of input
   if (calculation !== null) {
+    if (!/[0-9]$/.test(calculation)) {
+      throw new Error("Incomplete arithmetic expression");
+    }
     output += eval(calculation);
   }
 

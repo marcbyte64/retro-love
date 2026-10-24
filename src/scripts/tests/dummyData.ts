@@ -12,6 +12,7 @@ export function injectTestData() {
   };
 
   const testPrompts = [
+    '5 PRINT "hello world',
     '10 IF 1=1 AND 2=3 OR 3=3 THEN PRINT "Hello"',
 
     // '10 PRINT "HELLO " + "WORLD"; A + 2.1; 40 + 2 4 * 3; C$; A, B, D%',
