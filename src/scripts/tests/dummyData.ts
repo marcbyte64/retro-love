@@ -12,9 +12,7 @@ export function injectTestData() {
   };
 
   const testPrompts = [
-    '10 print "hello"',
-    "20 print",
-    '30 print "world"',
+    '10 if 1=1 and 2=2 then print "hello"',
 
     // '10 print "HELLO " + "WORLD"; A + 2.1; 40 + 2 4 * 3; C$; A, B, D%',
     // '20 print "--------"',

@@ -48,14 +48,14 @@ export function tokenize(string: string): Token[] {
       isInMode = false;
     }
     // turn varmode off
-    if (Object.hasOwn(commands, buffer)) {
-      tokens.push({ value: buffer, type: "command" });
+    if (Object.hasOwn(commands, buffer.toLowerCase())) {
+      tokens.push({ value: buffer.toLowerCase(), type: "command" });
       buffer = "";
       varmode = false;
       isInMode = false;
     }
-    if (keywords.includes(buffer)) {
-      tokens.push({ value: buffer, type: "keyword" });
+    if (keywords.includes(buffer.toLowerCase())) {
+      tokens.push({ value: buffer.toLowerCase(), type: "keyword" });
       buffer = "";
       varmode = false;
       isInMode = false;
@@ -63,14 +63,14 @@ export function tokenize(string: string): Token[] {
     if ((!/^[A-Za-z]$/.test(char) || types.includes(char)) && varmode) {
       if (types.includes(char)) {
         buffer += char;
-        tokens.push({ value: buffer, type: "variable" });
+        tokens.push({ value: buffer.toLowerCase(), type: "variable" });
         buffer = "";
         varmode = false;
         isInMode = false;
         continue;
       }
 
-      tokens.push({ value: buffer, type: "variable" });
+      tokens.push({ value: buffer.toLowerCase(), type: "variable" });
       buffer = "";
       varmode = false;
       isInMode = false;

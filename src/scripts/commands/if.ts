@@ -14,103 +14,153 @@ type ComparisonResult = {
 export async function IF(args: string): Promise<CommandResult> {
   const tokens = strings.tokenize(args);
   let isResolved = false;
-
   let comparison: ComparisonResult = { type: "success", value: false };
+
   for (let i = 0; i < tokens.length;) {
     // evaluate first statement
     if (i === 0) {
       comparison = evaluateComparison(tokens[i], tokens[i + 2], tokens[i + 1]);
+
+      if (comparison.type === "error") {
+        return { type: commandType.ERROR, value: null };
+      }
+
       i += 3;
       continue;
     }
 
-    // abort if arguments are invalid
-    if (comparison.type === "error") {
-      return { type: commandType.ERROR, value: null };
-    }
-
     // evaluate or-statements
-    if (tokens[i].type === "keyword" && tokens[i].value === "or" && !isResolved) {
+    if (tokens[i].type === "keyword" && tokens[i].value === "or") {
+      const result = evaluateComparison(
+        tokens[i + 1],
+        tokens[i + 3],
+        tokens[i + 2],
+        !isResolved && !comparison.value,
+      );
+
+      if (result.type === "error") {
+        return { type: commandType.ERROR, value: null };
+      }
+
       if (comparison.value) {
         isResolved = true;
-      } else {
-        comparison = evaluateComparison(tokens[i + 1], tokens[i + 3], tokens[i + 2]);
+      } else if (!isResolved) {
+        comparison = result;
       }
+
       i += 4;
       continue;
     }
 
     // evaluate and-statements
-    if (tokens[i].type === "keyword" && tokens[i].value === "and" && !isResolved) {
-      if (comparison.value) {
-        comparison = evaluateComparison(tokens[i + 1], tokens[i + 3], tokens[i + 2]);
+    if (tokens[i].type === "keyword" && tokens[i].value === "and") {
+      const result = evaluateComparison(
+        tokens[i + 1],
+        tokens[i + 3],
+        tokens[i + 2],
+        !isResolved && comparison.value,
+      );
+
+      if (result.type === "error") {
+        return { type: commandType.ERROR, value: null };
       }
+
+      if (!isResolved && comparison.value) {
+        comparison = result;
+      }
+
       i += 4;
       continue;
     }
 
     // then: check for move to line
     if (
-      comparison.value &&
       tokens[i].type === "keyword" &&
       (tokens[i].value === "then" || tokens[i].value === "goto") &&
-      tokens[i + 1].type === "number"
+      tokens[i + 1]?.type === "number" &&
+      i + 2 === tokens.length
     ) {
-      return GOTO(String(tokens[i + 1].value));
+      if (comparison.value) {
+        return GOTO(String(tokens[i + 1].value));
+      }
+
+      return { type: commandType.DEFAULT, value: null };
     }
 
     // then: check for execute follow-up command
     if (
-      comparison.value &&
       tokens[i].type === "keyword" &&
       tokens[i].value === "then" &&
+      tokens[i + 1]?.type === "command" &&
       tokens[i + 1].value === "print"
     ) {
-      return PRINT(`"${tokens[i + 2].value}"`);
+      if (comparison.value) {
+        return PRINT(tokens.slice(i + 2));
+      }
+
+      return { type: commandType.DEFAULT, value: null };
     }
 
-    i++;
+    return { type: commandType.ERROR, value: null };
   }
 
-  return { type: commandType.DEFAULT, value: null };
+  return { type: commandType.ERROR, value: null };
 }
 
-function evaluateComparison(operand1: Token, operand2: Token, operator: Token): ComparisonResult {
+function evaluateComparison(
+  operand1: Token | undefined,
+  operand2: Token | undefined,
+  operator: Token | undefined,
+  shouldEvaluate = true,
+): ComparisonResult {
   const validOperands = ["string", "number", "variable"];
 
   if (
+    !operand1 ||
+    !operand2 ||
+    !operator ||
     !validOperands.includes(operand1.type) ||
-    !validOperands.includes(operand2?.type) ||
-    operator.type !== "comparisonoperator"
+    !validOperands.includes(operand2.type) ||
+    operator.type !== "comparisonoperator" ||
+    !["=", "<>", "<", "<=", ">", ">="].includes(String(operator.value))
   ) {
     return { type: "error", value: false };
   }
 
+  if (!shouldEvaluate) {
+    return { type: "success", value: false };
+  }
+
   // prepare variables and arguments
   const leftValue =
-    operand1.type === "variable"
-      ? strings.substituteVariables([operand1], storage.variableStorage)[0].value
-      : operand1.value;
+    operand1.type === "variable" ? storage.variableStorage[String(operand1.value)] : operand1.value;
+
   const rightValue =
-    operand2.type === "variable"
-      ? strings.substituteVariables([operand2], storage.variableStorage)[0].value
-      : operand2.value;
-  let isTrue = false;
+    operand2.type === "variable" ? storage.variableStorage[String(operand2.value)] : operand2.value;
+
+  if (leftValue === undefined || rightValue === undefined) {
+    return { type: "error", value: false };
+  }
 
   // compare operands via operator
-  // TODO: determineVariableType and throw mismatch error?
-  if (operator.value === "=" && leftValue == rightValue) {
-    isTrue = true;
-  } else if (operator.value === "<>" && leftValue != rightValue) {
-    isTrue = true;
-  } else if (operator.value === "<" && leftValue < rightValue) {
-    isTrue = true;
-  } else if (operator.value === "<=" && leftValue <= rightValue) {
-    isTrue = true;
-  } else if (operator.value === ">" && leftValue > rightValue) {
-    isTrue = true;
-  } else if (operator.value === ">=" && leftValue >= rightValue) {
-    isTrue = true;
+  if (typeof leftValue !== typeof rightValue) {
+    return { type: "error", value: false };
+  }
+
+  let isTrue = false;
+
+  if (operator.value === "=") {
+    isTrue = leftValue === rightValue;
+  } else if (operator.value === "<>") {
+    isTrue = leftValue !== rightValue;
+  } else if (operator.value === "<") {
+    isTrue = leftValue < rightValue;
+  } else if (operator.value === "<=") {
+    isTrue = leftValue <= rightValue;
+  } else if (operator.value === ">") {
+    isTrue = leftValue > rightValue;
+  } else if (operator.value === ">=") {
+    isTrue = leftValue >= rightValue;
   }
 
   return { type: "success", value: isTrue };
