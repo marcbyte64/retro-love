@@ -13,6 +13,10 @@ export const storeCommand = (command: Command) => {
   commandStorage.sort((a, b) => a.lineNumber - b.lineNumber);
 };
 
+export const deleteCommand = (lineNumber: number) => {
+  commandStorage = commandStorage.filter((command) => command.lineNumber !== lineNumber);
+};
+
 export const storeVariable = (name: string, value: string | number) => {
   variableStorage[name] = value;
 };

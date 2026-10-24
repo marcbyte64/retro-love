@@ -1,8 +1,8 @@
 /** C=64 Basic V2 Interpreter **/
 import { dom } from "./ui/dom";
-import { terminalInput } from "./ui/terminalInput";
+import { basicInput } from "./ui/basicInput";
 
-terminalInput.initialize();
+basicInput.initialize();
 dom.resetInput(true);
 
 // import test-data in dev-env

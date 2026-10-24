@@ -3,16 +3,21 @@ import { commands } from "../commands/index";
 import * as storage from "./storage";
 
 function createDispatcher() {
-  function dispatchCommand(prompt: string) {
-    const lineNumberMatch = prompt.match(/^(\d+)\s/);
-    const commandText = lineNumberMatch ? prompt.slice(lineNumberMatch[0].length) : prompt;
-    const validatedCommand = validateCommand(commandText);
+  function dispatchCommand(inputLine: string) {
+    const lineNumberMatch = inputLine.match(/^(\d+)(?:\s|$)/);
+    const commandText = lineNumberMatch ? inputLine.slice(lineNumberMatch[0].length) : inputLine;
 
-    // newline
+    // newline / delete storage line
     if (commandText === "") {
+      if (lineNumberMatch) {
+        storage.deleteCommand(Number(lineNumberMatch[1]));
+      }
+
       dom.resetInput(false);
       return;
     }
+
+    const validatedCommand = validateCommand(commandText);
 
     // invalid command
     if (!validatedCommand || !validatedCommand.valid) {
@@ -21,43 +26,47 @@ function createDispatcher() {
       return;
     }
 
+    // store numbered programm lines
     if (lineNumberMatch !== null) {
       const lineNumber = Number(lineNumberMatch[1]);
       const { name, fn, args } = validatedCommand;
 
       storage.storeCommand({ lineNumber, name, fn, args });
       dom.resetInput(false);
-    } else {
-      void validatedCommand
-        .fn(validatedCommand.args)
-        .then(() => {
-          dom.resetInput(true);
-        })
-        .catch((error: unknown) => {
-          console.error("Command execution failed:", error);
-        });
+      return;
     }
+
+    // execute commands without line number
+    void validatedCommand
+      .fn(validatedCommand.args)
+      .then(() => {
+        dom.resetInput(true);
+      })
+      .catch((error: unknown) => {
+        console.error("Command execution failed:", error);
+        dom.resetInput(true);
+      });
   }
 
   function validateCommand(commandText: string) {
-    const space = commandText.indexOf(" ");
-    const command = commandText.slice(0, space === -1 ? undefined : space);
-    const args = space === -1 ? "" : commandText.slice(space + 1);
+    const spaceIndex = commandText.indexOf(" ");
+    const command = commandText.slice(0, spaceIndex === -1 ? undefined : spaceIndex).toLowerCase();
+    const args = spaceIndex === -1 ? "" : commandText.slice(spaceIndex + 1);
 
-    // lookup and validate command
     if (!isCommandName(command)) {
       return false;
     }
-    const result = commands[command];
 
-    if (!result) return false;
-
-    const isValid = !!((result.args && args) || (!result.args && !args));
+    const definition = commands[command];
+    const isValid =
+      definition.args === "optional" ||
+      (definition.args === "required" && args !== "") ||
+      (definition.args === "none" && args === "");
 
     return {
       valid: isValid,
       name: command,
-      fn: result.fn,
+      fn: definition.fn,
       args,
     };
   }

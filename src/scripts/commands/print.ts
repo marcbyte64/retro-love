@@ -12,5 +12,10 @@ export async function PRINT(args: string): Promise<CommandResult> {
     dom.outputLine(parsed);
   }
 
+  if (args === "") {
+    dom.outputLine("");
+    return { type: commandType.DEFAULT, value: null };
+  }
+
   return { type: commandType.DEFAULT, value: null };
 }

@@ -12,11 +12,11 @@ function updateInputSize(): void {
 }
 
 function submitPrompt(): void {
-  const value = dom.input.value.trim().toLowerCase();
+  const inputLine = dom.input.value.trim();
 
   dom.clearInput();
-  dom.outputLine(value);
-  dispatcher.dispatchCommand(value);
+  dom.outputLine(inputLine);
+  dispatcher.dispatchCommand(inputLine);
 }
 
 function registerInputListeners(): void {
@@ -41,7 +41,7 @@ function registerInputListeners(): void {
   });
 }
 
-export const terminalInput = {
+export const basicInput = {
   initialize(): void {
     registerInputListeners();
     registerHotkeys();

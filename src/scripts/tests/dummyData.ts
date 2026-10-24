@@ -12,12 +12,10 @@ export function injectTestData() {
   };
 
   const testPrompts = [
-    //'10 if 5 > 4 then print "20"',
-    //'20 if 5 > 3 then print A',
     '10 print "hello"',
-    '20 if 1 = 1 then print "world"',
-    "30 if 1 = 1 or 2 = 3 then 10",
-    '40 print "end"',
+    "20 print",
+    '30 print "world"',
+
     // '10 print "HELLO " + "WORLD"; A + 2.1; 40 + 2 4 * 3; C$; A, B, D%',
     // '20 print "--------"',
     // '30 goto 10',
