@@ -1,3 +1,4 @@
+import { commandType } from "./constants";
 import { dom } from "../ui/dom";
 import { commands } from "../commands/index";
 import * as storage from "./storage";
@@ -39,7 +40,11 @@ function createDispatcher() {
     // execute commands without line number
     void validatedCommand
       .fn(validatedCommand.args)
-      .then(() => {
+      .then((result) => {
+        if (result.type === commandType.ERROR) {
+          dom.outputLine("?Syntax Error");
+        }
+
         dom.resetInput(true);
       })
       .catch((error: unknown) => {
