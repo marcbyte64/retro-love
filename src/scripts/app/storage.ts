@@ -18,7 +18,7 @@ export const deleteCommand = (lineNumber: number) => {
 };
 
 export const storeVariable = (name: string, value: string | number) => {
-  variableStorage[name] = value;
+  variableStorage[name.toLowerCase()] = value;
 };
 
 export const clearCommandStorage = () => {
