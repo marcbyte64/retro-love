@@ -12,8 +12,7 @@ export function injectTestData() {
   };
 
   const testPrompts = [
-    '10 IF 2>=1 THEN PRINT "YES"',
-    '50 IF 1=1 AND 2=3 OR 3=3 THEN PRINT "YES"',
+    '10 print "hello"',
 
     // '10 PRINT "HELLO " + "WORLD"; A + 2.1; 40 + 2 4 * 3; C$; A, B, D%',
     // '20 PRINT "--------"',

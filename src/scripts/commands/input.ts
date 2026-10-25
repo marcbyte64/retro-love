@@ -1,3 +1,4 @@
+import type { Token } from "../types/token";
 import type { CommandResult } from "../types/command";
 import { commandType } from "../app/constants";
 import { storeVariable } from "../app/storage";
@@ -5,20 +6,25 @@ import * as strings from "../../scripts/utils/strings";
 import { dom } from "../ui/dom";
 
 export async function INPUT(args: string): Promise<CommandResult> {
-  const tokens = strings.tokenize(args);
+  let tokens: Token[];
 
-  // check if input starts with prompt request
-  if (
-    tokens.length >= 3 &&
-    tokens[0].type === "string" &&
-    tokens[1].value === ";" &&
-    tokens[2].type === "variable"
-  ) {
+  try {
+    tokens = strings.tokenize(args);
+  } catch {
+    return { type: commandType.ERROR, value: null };
+  }
+
+  // check optional prompt
+  if (tokens[0]?.type === "string") {
+    if (tokens[1]?.value !== ";" || tokens[2]?.type !== "variable") {
+      return { type: commandType.ERROR, value: null };
+    }
+
     dom.outputLine(tokens[0].value);
   }
 
   // extract variables
-  const vars = tokens.slice(2);
+  const vars = tokens[0]?.type === "string" ? tokens.slice(2) : tokens;
 
   const lastElement = vars.slice(-1)[0];
   const separatorsValid = vars.every((value, index) =>

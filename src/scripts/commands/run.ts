@@ -43,12 +43,12 @@ export async function RUN(): Promise<CommandResult> {
       // execute INPUT
       if (result.type === commandType.INPUT) {
         programState.activeInputMode = inputMode.INPUTVAR;
+        programState.isInputEnabled = true;
 
         for (let j = 0; j < result.value.length; j++) {
           try {
             await waitForUserInput(String(result.value[j].value));
-          } catch (err) {
-            console.error(err);
+          } catch {
             j--;
           }
         }
