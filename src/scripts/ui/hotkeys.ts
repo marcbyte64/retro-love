@@ -1,3 +1,4 @@
+import { inputMode } from "../app/constants";
 import { programState } from "../app/state";
 import { dom } from "./dom";
 
@@ -12,6 +13,7 @@ const hotkeyDefinitions: Hotkey[] = [
     keys: ["control", "c"],
     action: () => {
       programState.abortProgram = true;
+      dom.input.dispatchEvent(new Event("cancelInput"));
     },
   },
 ];
@@ -25,15 +27,16 @@ export function registerHotkeys(): void {
 
     keysDown.add(key);
 
-    if (!programState.isInputEnabled) {
-      event.preventDefault();
-
+    if (!programState.isInputEnabled || programState.activeInputMode === inputMode.INPUTVAR) {
       const hotkey = hotkeyDefinitions.find(
         ({ keys }) => keys.length === keysDown.size && keys.every((key) => keysDown.has(key)),
       );
 
       if (hotkey) {
+        event.preventDefault();
         hotkey.action();
+      } else if (!programState.isInputEnabled) {
+        event.preventDefault();
       }
     }
   });

@@ -49,6 +49,11 @@ export async function RUN(): Promise<CommandResult> {
           try {
             await waitForUserInput(String(result.value[j].value));
           } catch {
+            if (programState.abortProgram) {
+              programState.abortProgram = false;
+              return { type: commandType.DEFAULT, value: null };
+            }
+
             j--;
           }
         }
@@ -61,6 +66,7 @@ export async function RUN(): Promise<CommandResult> {
       if (i < lineCount - 1) await sleep(delayMs);
     }
   } finally {
+    programState.activeInputMode = inputMode.PROMPT;
     programState.isInputEnabled = true;
   }
 

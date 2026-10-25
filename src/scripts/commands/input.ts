@@ -47,9 +47,18 @@ export async function INPUT(args: string): Promise<CommandResult> {
   return { type: commandType.INPUT, value: requestedVariables };
 }
 
-// TODO: ability to cancel input with CTRL+C
 export async function waitForUserInput(variableName: string) {
   return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      dom.input.removeEventListener("keydown", handler);
+      dom.input.removeEventListener("cancelInput", cancelHandler);
+    };
+
+    const cancelHandler = () => {
+      cleanup();
+      reject(new Error("InputCancelled"));
+    };
+
     const handler = (e: KeyboardEvent): void => {
       if (e.key === "Enter") {
         const inputValue = dom.input.value.trim();
@@ -58,9 +67,9 @@ export async function waitForUserInput(variableName: string) {
 
         // reject if type is invalid
         if (!isCompatible) {
-          dom.input.removeEventListener("keydown", handler);
+          cleanup();
           dom.outputLine(inputValue);
-          dom.outputLine(`?REDO FROM START`);
+          dom.outputLine("?REDO FROM START");
           dom.clearInput();
           reject(new Error("InvalidType"));
           return;
@@ -71,11 +80,13 @@ export async function waitForUserInput(variableName: string) {
         storeVariable(variableName, value);
         dom.outputLine(inputValue);
         dom.clearInput();
-        dom.input.removeEventListener("keydown", handler);
+        cleanup();
         resolve(inputValue);
       }
     };
-    // add temporary event listener
+
+    // add temporary event listeners
     dom.input.addEventListener("keydown", handler);
+    dom.input.addEventListener("cancelInput", cancelHandler);
   });
 }
