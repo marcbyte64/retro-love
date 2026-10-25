@@ -34,9 +34,12 @@ function registerInputListeners(): void {
       return;
     }
 
-    if (event.key === "Enter" && programState.activeInputMode === inputMode.PROMPT) {
+    if (event.key === "Enter") {
       event.preventDefault();
-      submitPrompt();
+
+      if (programState.activeInputMode === inputMode.PROMPT) {
+        submitPrompt();
+      }
     }
   });
 }
