@@ -47,3 +47,15 @@ describe("BASIC tokenizer", () => {
     expect(strings.tokenize(input)).toEqual(expected);
   });
 });
+
+describe("BASIC variable type conversion", () => {
+  it.each([
+    ["12", 12],
+    ["12.8", 12],
+    ["-12.8", -12],
+    [".5", 0],
+    ["-.5", 0],
+  ])("converts %s to integer %i", (input, expected) => {
+    expect(strings.convertToType(input, "integer")).toBe(expected);
+  });
+});
