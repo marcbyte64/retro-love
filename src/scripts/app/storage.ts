@@ -4,7 +4,7 @@ export let commandStorage: Command[] = [];
 export let variableStorage: Record<string, string | number> = {};
 
 export const storeCommand = (command: Command) => {
-  // if linenumer already exists -> remove
+  // if line number already exists -> remove
   const exists = commandStorage.findIndex((obj) => obj.lineNumber === command.lineNumber);
   if (exists !== -1) commandStorage.splice(exists, 1);
 
