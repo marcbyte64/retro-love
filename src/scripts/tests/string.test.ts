@@ -59,3 +59,38 @@ describe("BASIC variable type conversion", () => {
     expect(strings.convertToType(input, "integer")).toBe(expected);
   });
 });
+
+describe("BASIC variable type compatibility", () => {
+  it.each([
+    ["A", "123", true],
+    ["A", "-12.5", true],
+    ["A", ".5", true],
+    ["A", "12.", true],
+    ["A", "HELLO", false],
+    ["A", "", false],
+    ["A%", "123", true],
+    ["A%", "12.8", true],
+    ["A%", "-.5", true],
+    ["A%", "HELLO", false],
+    ["A$", "HELLO", true],
+    ["A$", "123", true],
+    ["A$", "", true],
+  ])("checks whether %s accepts %s", (variable, input, expected) => {
+    expect(strings.isTypeCompatible(variable, input)).toBe(expected);
+  });
+});
+
+describe("BASIC variable value conversion", () => {
+  it.each([
+    ["123", "float", 123],
+    ["-12.5", "float", -12.5],
+    [".5", "float", 0.5],
+    ["12.", "float", 12],
+    ["HELLO", "string", "HELLO"],
+    ["  Hello World  ", "string", "Hello World"],
+    ["123", "string", "123"],
+    ["", "string", ""],
+  ])("converts %s to %s", (input, type, expected) => {
+    expect(strings.convertToType(input, type)).toBe(expected);
+  });
+});
