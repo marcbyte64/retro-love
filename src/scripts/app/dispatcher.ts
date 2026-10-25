@@ -65,8 +65,8 @@ function createDispatcher() {
     const definition = commands[command];
     const isValid =
       definition.args === "optional" ||
-      (definition.args === "required" && args !== "") ||
-      (definition.args === "none" && args === "");
+      (definition.args === "required" && args.trim() !== "") ||
+      (definition.args === "none" && args.trim() === "");
 
     return {
       valid: isValid,
