@@ -3,7 +3,13 @@ import { commandType } from "../app/constants";
 import * as storage from "../app/storage";
 
 export async function GOTO(args: string): Promise<CommandResult> {
-  const targetLineNumber = Number(args.trim());
+  const target = args.trim();
+
+  if (!/^\d+$/.test(target)) {
+    return { type: commandType.ERROR, value: null };
+  }
+
+  const targetLineNumber = Number(target);
   const targetIndex = storage.commandStorage.findIndex(
     (obj) => obj.lineNumber === targetLineNumber,
   );
