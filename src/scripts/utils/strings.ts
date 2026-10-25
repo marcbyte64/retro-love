@@ -263,7 +263,7 @@ export function assignVariableType(prompt: string) {
     return "integer";
   }
 
-  if (/^[-+]?\d*\.\d+$/.test(trimmed)) {
+  if (/^[-+]?(?:\d+\.\d*|\.\d+)$/.test(trimmed)) {
     return "float";
   }
 
