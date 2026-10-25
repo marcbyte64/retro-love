@@ -298,7 +298,7 @@ export function convertToType(value: string, type: string): string | number {
   }
 
   if (type === "integer") {
-    return Math.trunc(Number(trimmed));
+    return Math.trunc(Number(trimmed)) || 0;
   }
 
   if (type === "float") {
