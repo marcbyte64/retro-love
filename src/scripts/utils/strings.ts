@@ -27,11 +27,6 @@ export function tokenize(string: string): Token[] {
   for (let i = 0; i <= string.length; i++) {
     const char = string[i];
 
-    // remove spaces if not in stringmode
-    if (!stringmode && char === " ") {
-      continue;
-    }
-
     // turn stringmode off
     if (char === '"' && stringmode) {
       tokens.push({ value: buffer, type: "string" });
@@ -48,13 +43,13 @@ export function tokenize(string: string): Token[] {
       isInMode = false;
     }
     // turn varmode off
-    if (Object.hasOwn(commands, buffer.toLowerCase())) {
+    if (!/^[A-Za-z]$/.test(char) && Object.hasOwn(commands, buffer.toLowerCase())) {
       tokens.push({ value: buffer.toLowerCase(), type: "command" });
       buffer = "";
       varmode = false;
       isInMode = false;
     }
-    if (keywords.includes(buffer.toLowerCase())) {
+    if (!/^[A-Za-z]$/.test(char) && keywords.includes(buffer.toLowerCase())) {
       tokens.push({ value: buffer.toLowerCase(), type: "keyword" });
       buffer = "";
       varmode = false;
@@ -74,6 +69,11 @@ export function tokenize(string: string): Token[] {
       buffer = "";
       varmode = false;
       isInMode = false;
+    }
+
+    // remove spaces if not in stringmode
+    if (!stringmode && char === " ") {
+      continue;
     }
 
     // turn stringmode on
