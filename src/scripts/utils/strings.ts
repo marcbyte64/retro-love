@@ -10,6 +10,7 @@
 
 import type { Token } from "../types/token";
 import { commands, keywords } from "../commands/index";
+import { calculate } from "./arithmetic";
 
 // create array of tokens
 export function tokenize(string: string): Token[] {
@@ -43,13 +44,13 @@ export function tokenize(string: string): Token[] {
       isInMode = false;
     }
     // turn varmode off
-    if (!/^[A-Za-z]$/.test(char) && Object.hasOwn(commands, buffer.toLowerCase())) {
+    if (!stringmode && !/^[A-Za-z]$/.test(char) && Object.hasOwn(commands, buffer.toLowerCase())) {
       tokens.push({ value: buffer.toLowerCase(), type: "command" });
       buffer = "";
       varmode = false;
       isInMode = false;
     }
-    if (!/^[A-Za-z]$/.test(char) && keywords.includes(buffer.toLowerCase())) {
+    if (!stringmode && !/^[A-Za-z]$/.test(char) && keywords.includes(buffer.toLowerCase())) {
       tokens.push({ value: buffer.toLowerCase(), type: "keyword" });
       buffer = "";
       varmode = false;
@@ -186,19 +187,15 @@ export function substituteVariables(
 // calculate expressions
 export function parse(tokens: Token[]): string {
   let output = "";
-  let calculation: string | null = null;
+  let calculation: Token[] = [];
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
 
     // finish calculation before a non-arithmetic token
-    if (calculation !== null && token.type !== "number" && token.type !== "operator") {
-      // TODO: replace eval with safe BASIC expression evaluator
-      if (!/[0-9]$/.test(calculation)) {
-        throw new Error("Incomplete arithmetic expression");
-      }
-      output += eval(calculation);
-      calculation = null;
+    if (calculation.length && token.type !== "number" && token.type !== "operator") {
+      output += calculate(calculation);
+      calculation = [];
     }
 
     if (token.type === "string") {
@@ -212,10 +209,10 @@ export function parse(tokens: Token[]): string {
     }
 
     if (token.type === "number") {
-      if (calculation !== null) {
-        calculation += String(token.value);
+      if (calculation.length) {
+        calculation.push(token);
       } else if (tokens[i + 1]?.type === "operator") {
-        calculation = String(token.value);
+        calculation.push(token);
       } else {
         output += token.value;
       }
@@ -224,21 +221,14 @@ export function parse(tokens: Token[]): string {
     }
 
     if (token.type === "operator") {
-      if (calculation === null || !/[0-9]$/.test(calculation)) {
-        throw new Error("Invalid arithmetic expression");
-      }
-
-      calculation += String(token.value);
+      calculation.push(token);
       continue;
     }
   }
 
   // finish calculation at end of input
-  if (calculation !== null) {
-    if (!/[0-9]$/.test(calculation)) {
-      throw new Error("Incomplete arithmetic expression");
-    }
-    output += eval(calculation);
+  if (calculation.length) {
+    output += calculate(calculation);
   }
 
   return output;
