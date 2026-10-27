@@ -94,3 +94,15 @@ describe("BASIC variable value conversion", () => {
     expect(strings.convertToType(input, type)).toBe(expected);
   });
 });
+
+describe("BASIC keyword preservation", () => {
+  it.each([
+    ['"AND WHAT"', "AND WHAT"],
+    ['"IF SO"', "IF SO"],
+    ['"OR ELSE"', "OR ELSE"],
+    ['"PRINT HELLO"', "PRINT HELLO"],
+    ['"THEN WHAT"', "THEN WHAT"],
+  ])("preserves keywords and commands inside %s", (input, expected) => {
+    expect(strings.tokenize(input)).toEqual([{ type: "string", value: expected }]);
+  });
+});
