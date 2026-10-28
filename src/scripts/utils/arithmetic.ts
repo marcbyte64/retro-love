@@ -3,6 +3,30 @@ import type { Token } from "../types/token";
 export function calculate(tokens: Token[]): string {
   const expression = [...tokens];
 
+  // resolve unary minus
+  for (let i = 0; i < expression.length; i++) {
+    const token = expression[i];
+
+    if (
+      token.type === "operator" &&
+      token.value === "-" &&
+      (i === 0 || expression[i - 1].type === "operator")
+    ) {
+      const next = expression[i + 1];
+
+      if (!next || next.type !== "number") {
+        throw new Error("Invalid unary minus");
+      }
+
+      expression[i] = {
+        type: "number",
+        value: String(-Number(next.value)),
+      };
+
+      expression.splice(i + 1, 1);
+    }
+  }
+
   if (expression.length === 0) {
     throw new Error("Empty arithmetic expression");
   }

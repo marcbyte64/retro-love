@@ -78,4 +78,48 @@ describe("Arithmetic calculations", () => {
       expect(tokens).toEqual(original);
     });
   });
+
+  describe("Unary minus", () => {
+    it("handles a negative number", () => {
+      expect(
+        calculate([
+          { type: "operator", value: "-" },
+          { type: "number", value: "5" },
+        ]),
+      ).toBe("-5");
+    });
+
+    it("handles unary minus after multiplication", () => {
+      expect(
+        calculate([
+          { type: "number", value: "2" },
+          { type: "operator", value: "*" },
+          { type: "operator", value: "-" },
+          { type: "number", value: "3" },
+        ]),
+      ).toBe("-6");
+    });
+
+    it("handles subtraction of a negative number", () => {
+      expect(
+        calculate([
+          { type: "number", value: "10" },
+          { type: "operator", value: "-" },
+          { type: "operator", value: "-" },
+          { type: "number", value: "5" },
+        ]),
+      ).toBe("15");
+    });
+
+    it("still rejects consecutive plus operators", () => {
+      expect(() =>
+        calculate([
+          { type: "number", value: "2" },
+          { type: "operator", value: "+" },
+          { type: "operator", value: "+" },
+          { type: "number", value: "3" },
+        ]),
+      ).toThrow();
+    });
+  });
 });
