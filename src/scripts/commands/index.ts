@@ -1,15 +1,16 @@
 import type { CommandHandler } from "../types/command";
 
-import { RUN } from "./run";
+import { CLR } from "./clr";
+import { EXIT } from "./exit";
+import { GET } from "./get";
 import { GOTO } from "./goto";
 import { IF } from "./if";
 import { INPUT } from "./input";
-import { GET } from "./get";
-import { PRINT } from "./print";
+import { LOAD } from "./load";
 import { LIST } from "./list";
-import { CLR } from "./clr";
+import { PRINT } from "./print";
 import { REM } from "./rem";
-import { EXIT } from "./exit";
+import { RUN } from "./run";
 
 type CommandDefinition = {
   args: "none" | "required" | "optional";
@@ -17,16 +18,17 @@ type CommandDefinition = {
 };
 
 export const commands: Record<string, CommandDefinition> = {
-  run: { args: "none", fn: RUN },
+  clr: { args: "none", fn: CLR },
+  exit: { args: "none", fn: EXIT },
+  get: { args: "required", fn: GET },
   goto: { args: "required", fn: GOTO },
   if: { args: "required", fn: IF },
   input: { args: "required", fn: INPUT },
-  get: { args: "required", fn: GET },
-  print: { args: "optional", fn: PRINT },
   list: { args: "none", fn: LIST },
-  clr: { args: "none", fn: CLR },
+  load: { args: "required", fn: LOAD },
+  print: { args: "optional", fn: PRINT },
   rem: { args: "required", fn: REM },
-  exit: { args: "none", fn: EXIT },
+  run: { args: "none", fn: RUN },
 };
 
 export const keywords = ["or", "and", "then"];
