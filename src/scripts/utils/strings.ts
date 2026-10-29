@@ -265,19 +265,8 @@ export function isTypeCompatible(variableName: string, prompt: string) {
   const expectedType = determineVariableType(variableName);
   const actualType = assignVariableType(prompt);
 
-  if (expectedType === "string") {
-    return true;
-  }
-
-  if (expectedType === "integer" && actualType === "float") {
-    return true;
-  }
-
-  if ((expectedType === "integer" || expectedType === "float") && actualType === "string") {
-    return false;
-  }
-
-  return true;
+  // everything fits into string, float and int fit into everything
+  return expectedType === "string" || actualType !== "string";
 }
 
 export function convertToType(value: string, type: string): string | number {
