@@ -8,4 +8,4 @@ basicInput.initialize();
 dom.resetInput(true);
 
 // start application
-startApp();
+await startApp();
