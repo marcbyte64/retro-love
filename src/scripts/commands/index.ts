@@ -6,8 +6,9 @@ import { GET } from "./get";
 import { GOTO } from "./goto";
 import { IF } from "./if";
 import { INPUT } from "./input";
-import { LOAD } from "./load";
+import { LET } from "./let";
 import { LIST } from "./list";
+import { LOAD } from "./load";
 import { PRINT } from "./print";
 import { REM } from "./rem";
 import { RUN } from "./run";
@@ -24,6 +25,7 @@ export const commands: Record<string, CommandDefinition> = {
   goto: { args: "required", fn: GOTO },
   if: { args: "required", fn: IF },
   input: { args: "required", fn: INPUT },
+  let: { args: "required", fn: LET },
   list: { args: "none", fn: LIST },
   load: { args: "required", fn: LOAD },
   print: { args: "optional", fn: PRINT },
